@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String
-from api.dbManager.database import Base
+from .database import Base
 
 
 class Audio(Base):

@@ -8,8 +8,8 @@ from fastapi import FastAPI, UploadFile, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from api.dbManager import crud, schemas, models
-from api.dbManager.database import SessionLocal, engine
+from dbManager import crud, schemas, models
+from dbManager.database import SessionLocal, engine
 
 warnings.filterwarnings('ignore')
 

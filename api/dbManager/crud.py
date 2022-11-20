@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from api.dbManager import models, schemas
+from . import models, schemas
 from fastapi import HTTPException
 
 
