@@ -18,3 +18,4 @@ yarn-error.log*
 
 __pycache__
 venv/
+api/audios/

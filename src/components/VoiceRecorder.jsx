@@ -56,7 +56,7 @@ const handleClick = (newState) => () => {
 
           let data = new FormData();
           data.append("file", blob, "test.ogg");
-
+          console.log(data)
           const config = {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -88,6 +88,7 @@ const handleClick = (newState) => () => {
           record.current.style.width = '100px'
           record.current.style.height = '100px'
           record.current.style.backgroundColor = '#f18294'
+          record.current.style.top = "25px"
           // translateRef.current.innerHTML = "";
           mediaRecorder.start();
         };
@@ -97,6 +98,7 @@ const handleClick = (newState) => () => {
           record.current.style.backgroundColor = '#FFF'
           record.current.style.width = '50px'
           record.current.style.height = '50px'
+          record.current.style.top = "-12.5px"
           mediaRecorder.stop();
         };
       })

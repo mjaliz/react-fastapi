@@ -4,16 +4,18 @@ import warnings
 
 import uvicorn
 import whisper
-from fastapi import FastAPI, UploadFile, Depends, HTTPException
+from fastapi import FastAPI, UploadFile, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from dbManager import crud, schemas, models
-from dbManager.database import SessionLocal, engine
+from api.dbManager import crud, schemas, models
+from api.dbManager.database import SessionLocal, engine
 
 warnings.filterwarnings('ignore')
 
-model = whisper.load_model('tiny.en')
+model_name = "small.en"
+print(model_name)
+model = whisper.load_model(model_name, device="cuda", in_memory=False)
 
 
 def whisper_func(audio_file):
@@ -35,7 +37,14 @@ app.add_middleware(
 )
 
 
-# Dependency
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    print("Duration {} ms".format(round((time.time() - start_time) * 1000)))
+    return response
+
+
 def get_db():
     db = SessionLocal()
     try:
@@ -53,13 +62,14 @@ async def read_index():
 async def speech_to_text(file: UploadFile, db: Session = Depends(get_db)):
     file_name = f'{str(time.time()).replace(".", "-")}_{str(uuid.uuid4())}'
     audio_name = f'{file_name}.wav'
-    with open(f'./api/audios/{audio_name}', 'wb') as audio_file:
+    with open(f'./audios/{audio_name}', 'wb') as audio_file:
         audio_file.write(file.file.read())
 
     data = {"file_name": file_name, "is_valid": False}
     audio = schemas.AudioCreate(**data)
     crud.create_audio(db, audio)
-    transcribe = whisper_func(f'./api/audios/{audio_name}')
+    transcribe = whisper_func(f'./audios/{audio_name}')
+    print(transcribe)
     return {'text': transcribe, 'file_name': file_name}
 
 
